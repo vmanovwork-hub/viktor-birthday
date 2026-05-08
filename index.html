@@ -493,36 +493,26 @@ document.getElementById('rsvpForm').addEventListener('submit',function(e){
   if(!att){errEl.textContent='Моля, посочи дали ще присъстваш.';errEl.style.display='block';return;}
   btn.disabled=true;btn.querySelector('span').textContent='Изпраща се...';
 
-  const form=document.createElement('form');
-  form.method='GET';
-  form.action='https://script.google.com/macros/s/AKfycbz04xQ-mTCJyJIztmYH5LjF6uY2SslU8DyKqkjA6L5Ww6-V1O8AS9GpKMURPFqzqcLH8g/exec';
-  form.target='submitFrame';
-  
-  const data={
+  const params=new URLSearchParams({
     name:document.getElementById('uname').value,
     attending:att.value,
     meat:document.getElementById('meat').value||'—',
     alcohol:document.getElementById('alcohol').value||'—',
     soft:document.getElementById('soft').value||'—',
     allergies:document.getElementById('restrictions').value||'Няма'
-  };
-  
-  for(let k in data){
-    const inp=document.createElement('input');
-    inp.type='hidden';
-    inp.name=k;
-    inp.value=data[k];
-    form.appendChild(inp);
-  }
-  
-  document.body.appendChild(form);
-  form.submit();
-  
-  setTimeout(()=>{
-    document.getElementById('rsvpForm').style.display='none';
-    document.getElementById('successMsg').classList.add('show');
-    document.body.removeChild(form);
-  },1500);
+  });
+
+  const url='https://script.google.com/macros/s/AKfycbz04xQ-mTCJyJIztmYH5LjF6uY2SslU8DyKqkjA6L5Ww6-V1O8AS9GpKMURPFqzqcLH8g/exec?'+params.toString();
+
+  fetch(url,{method:'GET',mode:'no-cors'})
+    .then(()=>{
+      document.getElementById('rsvpForm').style.display='none';
+      document.getElementById('successMsg').classList.add('show');
+    })
+    .catch(()=>{
+      document.getElementById('rsvpForm').style.display='none';
+      document.getElementById('successMsg').classList.add('show');
+    });
 });
 </script>
 </body>
